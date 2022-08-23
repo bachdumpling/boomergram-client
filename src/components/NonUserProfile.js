@@ -3,6 +3,7 @@ import { faComment } from '@fortawesome/free-solid-svg-icons'
 import { HeartIcon } from "@heroicons/react/solid";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams } from 'react-router-dom';
+import ProfilePost from './ProfilePost';
 
 function NonUserProfile({ user }) {
     const [nonUserData, setNonUserData] = useState({
@@ -12,11 +13,14 @@ function NonUserProfile({ user }) {
         "follower_count": "",
         "following_count": "",
         "post_count": "",
-        "following_id":[],
+        "following_id": [],
         "posts": []
     });
 
     const { id } = useParams()
+
+    const [postButtonPopUp, setPostButtonPopUp] = useState(false)
+    const [onePost, setOnePost] = useState({})
 
     useEffect(() => {
         getData()
@@ -31,17 +35,12 @@ function NonUserProfile({ user }) {
             })
     }
 
-    // function matchId() {
-    //     if(user.following_id.find(id => id == nonUserData.id))
-    // }
-
-    console.log(nonUserData.id)
-
     function handleUnfollow() {
         fetch(`/unfollow/${nonUserData.id}`,
             { method: 'DELETE' })
             .then(r => r.json())
             .then(getData())
+            .then(window.location.reload())
     }
 
     function handleFollow() {
@@ -56,61 +55,68 @@ function NonUserProfile({ user }) {
         })
             .then(r => r.json())
             .then(r => getData())
+            .then(window.location.reload())
     }
 
 
     return (
-        <div className='p-10 max-w-5xl mx-5 xl:mx-auto bg-gray-50 h-screen'>
-            <div className='grid grid-cols-4 gap-4 border-b-2 pb-12'>
-                <div className='avatar justify-center'>
-                    <div className=' w-40 h-40 rounded-full'>
-                        <img className=' object-fill' src={nonUserData.avatar_url} />
+        <div className='bg-gray-50 w-screen min-h-screen'>
+            <div className='p-10 max-w-5xl mx-5 xl:mx-auto '>
+                <div className='grid grid-cols-4 gap-4 border-b-2 pb-8'>
+                    <div className='avatar justify-center'>
+                        <div className=' w-40 h-40 rounded-full'>
+                            <img className=' object-fill' src={nonUserData.avatar_url} />
+                        </div>
+                    </div>
+                    <div className='col-span-3 ml-10'>
+                        <span className='text-4xl mr-4 font-extralight tracking-wider'>{nonUserData.username}</span>
+                        {
+                            user.following_id.find(id => id == nonUserData.id)
+                                ?
+                                (<button onClick={() => { handleUnfollow() }}><div className='cursor-pointer inline text-sm text-gray-700 font-semibold p-1 px-2 border border-gray-200 rounded mr-4'>Following</div></button>)
+                                :
+                                (<button onClick={handleFollow}><div className='cursor-pointer inline text-sm text-white bg-blue-500 font-semibold p-1 px-6 border border-gray-200 rounded mr-4'>Follow</div></button>)}
+
+                        <div className='flex my-4'>
+                            <div><span className='font-semibold'>{nonUserData.post_count}</span> posts</div>
+                            <div className='ml-4'><span className='font-semibold'>{nonUserData.follower_count}</span> followers</div>
+                            <div className='ml-4'><span className='font-semibold'>{nonUserData.following_count}</span> following</div>
+                        </div>
+                        <div><p>{nonUserData.bio}</p></div>
                     </div>
                 </div>
-                <div className='col-span-3 ml-10'>
-                    <span className='text-4xl mr-4 font-extralight tracking-wider'>{nonUserData.username}</span>
-                    {
-                        user.following_id.find(id => id == nonUserData.id)
-                            ?
-                            (<button onClick={() => { handleUnfollow() }}><div className='cursor-pointer inline text-sm text-gray-700 font-semibold p-1 px-2 border border-gray-200 rounded mr-4'>Following</div></button>)
-                            :
-                            (<button onClick={handleFollow}><div className='cursor-pointer inline text-sm text-white bg-blue-500 font-semibold p-1 px-6 border border-gray-200 rounded mr-4'>Follow</div></button>)}
 
-                    <div className='flex my-4'>
-                        <div><span className='font-semibold'>{nonUserData.post_count}</span> posts</div>
-                        <div className='ml-4'><span className='font-semibold'>{nonUserData.follower_count}</span> followers</div>
-                        <div className='ml-4'><span className='font-semibold'>{nonUserData.following_count}</span> following</div>
-                    </div>
-                    <div><p>{nonUserData.bio}</p></div>
-                </div>
-            </div>
-
-            <div className='pt-12 grid grid-cols-3 gap-7'>
-                {nonUserData.posts.map((img) => {
-                    return (
-                        <div className='overflow-hidden aspect-square'>
-                            <div className='relative group cursor-pointerÏ'>
-                                <div className=' h-[300px] relative'>
-                                    <img className='h-[300px] object-cover w-full' src={img.img_url} />
-                                </div>
-
-                                <div className="absolute top-0 opacity-0 group-hover:opacity-100 left-1/2 -translate-x-1/2 w-full h-full bg-black-rgba flex text-white justify-center items-center space-x-3">
-
-                                    <div className='space-x-1'>
-                                        <HeartIcon className='h-6 inline -translate-y-[2px]' /><span>{img.likes.length}</span>
+                <div className='pt-8 grid grid-cols-3 gap-7'>
+                    {nonUserData.posts.map((img) => {
+                        return (
+                            <div onClick={() => {
+                                setOnePost(img)
+                                setPostButtonPopUp(!postButtonPopUp)
+                            }} className='overflow-hidden aspect-square'>
+                                <div className='relative group cursor-pointerÏ'>
+                                    <div className=' h-[300px] relative'>
+                                        <img className='h-[300px] object-cover w-full' src={img.img_url} />
                                     </div>
 
-                                    <div className='space-x-1'>
-                                        <FontAwesomeIcon className='scale-x-[-1]' icon={faComment} size='lg' /><span>{img.comments.length}</span>
-                                    </div>
+                                    <div className="absolute top-0 opacity-0 group-hover:opacity-100 left-1/2 -translate-x-1/2 w-full h-full bg-black-rgba flex text-white justify-center items-center space-x-3">
 
+                                        <div className='space-x-1'>
+                                            <HeartIcon className='h-6 inline -translate-y-[2px]' /><span>{img.likes.length}</span>
+                                        </div>
+
+                                        <div className='space-x-1'>
+                                            <FontAwesomeIcon className='scale-x-[-1]' icon={faComment} size='lg' /><span>{img.comments.length}</span>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
-                })}
+                        )
+                    })}
 
+                </div>
             </div>
+            <ProfilePost user={user} onePost={onePost} setPostButtonPopUp={setPostButtonPopUp} postButtonPopUp={postButtonPopUp} />
         </div>
     )
 }

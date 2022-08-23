@@ -13,31 +13,20 @@ import CommentSection from './CommentSection';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import NonUserProfile from './NonUserProfile';
 
-function PostCard({ post, user, getData }) {
+function PostCard({ post, user, getData, userId, removePosts }) {
+    const [commentArr, setCommentArr] = useState(post.comments)
     const [comment, setComment] = useState('')
     const [postId, setPostId] = useState({})
     const [searchParams, setSearchParams] = useSearchParams({ n: 0 })
-    let nonUserId = searchParams.get('n')
-
-    // const [nonUserId,setNonUserId] = useState('')
-
     const [hasLike, setHasLike] = useState(true)
     const [showComment, setShowComment] = useState(false)
     const [buttonPopup, setButtonPopup] = useState(false)
 
     const navigate = useNavigate()
 
-    // function padTo2Digits(num) {
-    //     return num.toString().padStart(2, '0');
-    //   }
-
-    // function formatDate(date) {
-    //     return [
-    //       padTo2Digits(date.getDate()),
-    //       padTo2Digits(date.getMonth() + 1),
-    //       date.getFullYear(),
-    //     ].join('/');
-    //   }
+    function updateComment(cmt) {
+        setCommentArr([cmt, ...commentArr])
+    }
 
     function handleSubmitComment(e) {
         e.preventDefault()
@@ -52,7 +41,7 @@ function PostCard({ post, user, getData }) {
         })
             .then(r => r.json())
             .then(setComment(''))
-            .then(r => getData())
+            .then(r => updateComment(r))
     }
 
     function handleLike(e) {
@@ -69,7 +58,7 @@ function PostCard({ post, user, getData }) {
         })
             .then(r => r.json())
             .then(setHasLike(!hasLike))
-            .then(r => getData())
+            .then(r => getData(r))
     }
 
     function handleUnlike(e) {
@@ -79,21 +68,23 @@ function PostCard({ post, user, getData }) {
             { method: 'DELETE' })
             .then(r => r.json())
             .then(setHasLike(!hasLike))
-            .then(r => getData())
+            .then(r => getData(r))
     }
 
-    function handleDeletePost() {
+    function handleDeletePost(post) {
+        setButtonPopup(!buttonPopup)
         fetch(`/posts/${postId.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json" }
         })
             .then(r => r.json())
-            .then(window.location.reload())
+            .then(r => removePosts(r))
     }
 
-    function handleRerouteProfile() {
-        setSearchParams({ n: post.user.id })
+    function handleRerouteProfile(user) {
+        setSearchParams({ n: userId })
         setTimeout(() => {
-            navigate(`/users/${nonUserId}`)
+            navigate(`/users/${userId}`)
         }, 1000)
     }
 
@@ -101,7 +92,7 @@ function PostCard({ post, user, getData }) {
         // console.log('hello')
         fetch(`/unfollow/${postId.user.id}`,
             { method: 'DELETE' })
-            .then(r => r.json())
+            .then(r => r.json(r))
             .then(window.location.reload())
     }
 
@@ -128,7 +119,10 @@ function PostCard({ post, user, getData }) {
                     </div>)
                     :
                     (<div className='cursor-pointer rounded-xl relative w-full max-w-[400px] h-[100px] bg-white flex flex-col place-content-center'>
-                        <button onClick={(post) => { handleDeletePost(post) }}>
+                        <button onClick={(post) => {
+                            removePosts(post)
+                            handleDeletePost(post)
+                        }}>
                             <div className='border-b-2 w-full h-10 pb-2 mb-2 translate-y-2'>
                                 <p className='text-md font-semibold text-center'>Delete Post</p>
                             </div>
@@ -148,12 +142,11 @@ function PostCard({ post, user, getData }) {
             {/* Header */}
             <div className='flex items-center justify-between p-2'>
                 {/* <Link to={`/users/${nonUserId}`}> */}
-                <div onClick={() => {
-                    // setNonUserId(post.user.id)
-                    handleRerouteProfile()
+                <div onClick={(user) => {
+                    handleRerouteProfile(user)
                 }}
                     className='flex flex-row items-center cursor-pointer'>
-                    <img className='rounded-full h-12 w-12 object-cover border p-1 mr-3' src={post.user.avatar_url} alt='' />
+                    <img className='rounded-full h-12 w-12 object-cover border p-[2px] mr-3' src={post.user.avatar_url} alt='' />
                     <p className='flex-1 font-bold'>{post.user.username}</p>
                 </div>
                 {/* </Link> */}
@@ -203,9 +196,9 @@ function PostCard({ post, user, getData }) {
 
             {/* comments */}
             {showComment ?
-                <CommentSection key={post.id} post={post} />
+                <CommentSection key={post.id} commentArr={commentArr} />
                 : <div onClick={() => setShowComment(!showComment)} className='px-4 pb-2 cursor-pointer text-gray-500'>
-                    <span>{post.comments.length > 0 ? (`View all ${post.comments.length} comments`) : null}</span>
+                    <span>{commentArr.length > 0 ? (`View all ${commentArr.length} comments`) : null}</span>
                 </div>}
 
             {/* created at */}

@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { SearchIcon, PlusCircleIcon, ChatIcon, HeartIcon, UserGroupIcon, MenuIcon } from "@heroicons/react/outline"
+import { SearchIcon, PlusCircleIcon, ChatIcon, HeartIcon, UserIcon, MenuIcon } from "@heroicons/react/outline"
 import { HomeIcon } from "@heroicons/react/solid"
 import { Link } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { modalState } from './atoms/modalAtom'
 import Search from './Search'
+import SlamStyle from './SlamStyle'
 
-function Header({ user }) {
+function Header({ user, handleLogout }) {
 
     const [open, setOpen] = useRecoilState(modalState)
+    const [popUp, setPopup] = useState(false)
+    const [toggleBoomer, setToggleBoomer] = useState(false)
 
     const [searchTerm, setSearchTerm] = useState('')
 
@@ -22,19 +25,24 @@ function Header({ user }) {
             })
     }, [])
 
-    console.log(userData)
+    // console.log(userData)
+
+
+
 
     return (
         <div className='shadow-sm border-b bg-white sticky top-0 z-50'>
             <div className='absolute w-full h-full top-16 right-16 grid justify-center'>
-                <Search userData={userData} searchTerm={searchTerm} />
+
+                <Search setSearchTerm={setSearchTerm} userData={userData} searchTerm={searchTerm} />
+
             </div>
 
             <div className='flex justify-between max-w-6xl mx-5 lg:mx-auto'>
 
                 {/* left */}
-                <div className='relative flex items-center hidden lg:inline-grid w-28 cursor-pointer object-contain'>
-                    <Link to='/'><img src='https://www.vectorlogo.zone/logos/instagram/instagram-wordmark.svg' /></Link>
+                <div onClick={() => setToggleBoomer(!toggleBoomer)} className='relative flex items-center hidden lg:inline-grid w-28 cursor-pointer object-contain z-50'>
+                   <img src='https://www.vectorlogo.zone/logos/instagram/instagram-wordmark.svg' />
                 </div>
                 <div className='relative flex items-center w-10 lg:hidden shrink-0 cursor-pointer object-contain'>
                     <Link to='/'><img src='https://seeklogo.com/images/I/instagram-new-2016-glyph-logo-84CB825424-seeklogo.com.png' /></Link>
@@ -48,7 +56,7 @@ function Header({ user }) {
                         </div>
                         <input onChange={(e) => {
                             setSearchTerm(e.target.value)
-                        }} className='bg-gray-100 w-72 block w-full pl-10 sm:text-sm border-none rounded-md focus:ring-black focus:border-gray-600' type='text' placeholder='Search' />
+                        }} value={searchTerm} className='bg-gray-100 w-72 block pl-10 sm:text-sm border-none rounded-md focus:ring-black focus:border-gray-600' type='text' placeholder='Search' />
                     </div>
                 </div>
 
@@ -63,14 +71,67 @@ function Header({ user }) {
 
                     </div>
                     <PlusCircleIcon onClick={() => setOpen(true)} className='navBtn' />
-                    <UserGroupIcon className='navBtn' />
+                    {/* <UserGroupIcon className='navBtn' /> */}
                     <HeartIcon className='navBtn' />
 
-                    <Link to='/profile'>
-                        <img src={user.avatar_url} className='h-7 w-7 rounded-full cursor-pointer object-cover' />
-                    </Link>
+                    <img onClick={() => {
+                        setPopup(!popUp)
+                    }} src={user.avatar_url} className='h-7 w-7 rounded-full cursor-pointer object-cover' />
+                    {popUp ?
+                        (<div className='absolute w-full h-full top-16 grid justify-end'>
+                            <div className='-translate-y-3'>
+                                <div className='flex justify-end'>
+                                    <div className=" w-0 h-0
+                    translate-y-1
+                    border-l-[14px] border-l-transparent
+                    border-b-[14px] border-b-white
+                    border-r-[14px] border-r-transparent
+                    "></div>
+                                </div>
+
+                                <div className='bg-white w-40 min-w-md items-center rounded-md shadow-md h-18 cursor-pointer'>
+                                    <div className='flex px-4 items-center py-2'>
+
+                                        <Link to='/profile'>
+                                            <div onClick={() => {
+                                                setTimeout(() => {
+                                                    setPopup(false)
+                                                }, 500)
+                                            }} className=''><UserIcon className='h-4 w-4' /></div>
+                                        </Link>
+                                        <div className='pl-2 text-sm'>Profile</div>
+
+                                    </div>
+                                    <div onClick={() => {
+                                        setTimeout(() => {
+                                            setPopup(false)
+                                        }, 200)
+                                        handleLogout()
+                                    }} className='text-sm py-2 px-4 border-t-2'>
+                                        Log Out
+                                    </div>
+                                </div>
+                            </div>
+                        </div>)
+                        :
+                        null
+                    }
+
+
                 </div>
             </div>
+
+            {
+                toggleBoomer
+                ? (
+                    <div className='w-8/12 -translate-x-4 -translate-y-12 flex justify-center absolute '>
+                        <div className='text-black animate-bounce relative top-2 w-32 h-28 text-3xl flex justify-end items-center'>
+                            <span className='font-billabong tracking-wider relative -rotate-12'>For Boomer</span>
+                        </div>
+                    </div>)
+                : null
+            }
+
         </div>
     )
 }

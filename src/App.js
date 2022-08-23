@@ -1,6 +1,6 @@
 import Login from "./components/Login";
 import "./global.css"
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Profile from "./components/Profile";
@@ -11,6 +11,7 @@ import NonUserProfile from "./components/NonUserProfile";
 // import NonUserProfile from "./components/NonUserProfile";
 
 function App() {
+  const [posts, setPosts] = useState([])
   const [user, setUser] = useState({
     "username": "",
     "bio": "",
@@ -34,20 +35,58 @@ function App() {
       })
   }, []);
 
+  useEffect(() => {
+    getData()
+  }, [])
+
+  function getData() {
+    fetch('/feed')
+      .then(r => r.json())
+      .then(r => {
+        if (r.length > 0) {
+          setPosts(r)
+        }
+      })
+  }
+
+  function updatePosts(post) {
+    console.log(post)
+    setPosts([post, ...posts])
+  }
+
+  function removePosts(post){
+    setPosts(posts.filter((item) => {
+        return item.id !== post.id
+    }))
+}
+
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    fetch(`/logout`, {
+      method: "DELETE"
+    }).then(
+      setTimeout(() => {
+        navigate('/login')
+      }, 1000)
+    )
+  }
+
+
   return (
     <div className="bg-gray-50 text-black">
       <RecoilRoot>
-        <Header user={user} />
+        <Header handleLogout={handleLogout} user={user} />
         <Routes>
 
           {/* Home */}
-          <Route path="/" element={<Home user={user} />} />
+          <Route path="/" element={<Home posts={posts} user={user} handleLogout={handleLogout} getData={getData} updatePosts={updatePosts} removePosts={removePosts}/>} />
 
           {/* Login */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           {/* Profile */}
-          <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/profile" element={<Profile getData={getData} updatePosts={updatePosts} user={user} />} />
 
           {/* NonUserProfile */}
           <Route path="/users/:id" element={<NonUserProfile user={user} />} />

@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Feed from './Feed'
-import Modal from './Modal';
 
-function Home({user}) {
+function Home({ user, posts, handleLogout, getData, updatePosts, removePosts }) {
 
     return (
         <div className="bg-gray-50 h-screen overflow-y-scroll scroll-bar-hide">
             <div>
                 {/* Feed */}
-                <Feed user={user} />
-                
+                <Feed updatePosts={updatePosts} removePosts={removePosts} posts={posts} getData={getData} handleLogout={handleLogout} user={user} />
+
             </div>
+
         </div>
     )
 }

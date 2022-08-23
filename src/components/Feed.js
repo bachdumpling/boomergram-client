@@ -5,26 +5,7 @@ import Post from './Post'
 import Story from './Story'
 // import Suggestion from './Suggestion'
 
-function Feed({user}) {
-    const [posts, setPosts] = useState([])
-
-    function getData() {
-        fetch('/feed')
-            .then(r => r.json())
-            .then(r => {
-                if (r.length > 0) {
-                    setPosts(r)
-                }
-            })
-    }
-
-    function updatePosts(post){
-        setPosts([post, ...posts])
-    }
-
-    useEffect(()=>{
-        getData()
-    },[])
+function Feed({ user, updatePosts, getData, posts, handleLogout, removePosts  }) {
 
     // console.log(posts)
     return (
@@ -35,20 +16,20 @@ function Feed({user}) {
                 {/* <Story /> */}
 
                 {/* Post */}
-                <Post getData={getData} posts={posts} user={user} />
+                <Post getData={getData} posts={posts} user={user} removePosts={removePosts} />
             </section>
 
             <section className='hidden xl:inline-grid md:col-span-1'>
                 {/* Section */}
                 <div className='fixed top-20'>
                     {/* Mini profile */}
-                    <MiniProfile user={user} />
+                    <MiniProfile user={user} handleLogout={handleLogout} />
                     {/* Suggestion */}
                     {/* <Suggestion /> */}
                 </div>
             </section>
 
-            <Modal user={user} updatePosts={updatePosts}/>
+            <Modal user={user} updatePosts={updatePosts} />
         </main>
     )
 }

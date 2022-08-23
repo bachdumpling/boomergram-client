@@ -1,18 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from "react-router-dom";
 
-function MiniProfile({ user }) {
-    const navigate = useNavigate()
-
-    function handleLogout() {
-        fetch(`/logout`, {
-            method: "DELETE"
-        }).then(
-            setTimeout(() =>{
-                navigate('/login')
-            }, 1000)
-        )
-    }
+function MiniProfile({ user, handleLogout }) {
 
     return (
         <div className='flex items-center justify-between mt-14 ml-10'>

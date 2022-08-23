@@ -1,7 +1,7 @@
 import React from 'react'
 import PostCard from './PostCard';
 
-function Post({ posts, user, getData }) {
+function Post({ posts, user, getData, removePosts }) {
 
     return (
         <>
@@ -10,7 +10,7 @@ function Post({ posts, user, getData }) {
                 (<div>
                     {posts.map((post) => {
                         return (
-                            <PostCard user={user} getData={getData} post={post} key={post.id} />
+                            <PostCard removePosts={removePosts} user={user} userId={post.user.id} getData={getData} post={post} key={post.id} />
                         )
                     })}
                 </div>)
