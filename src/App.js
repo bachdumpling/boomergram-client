@@ -54,11 +54,11 @@ function App() {
     setPosts([post, ...posts])
   }
 
-  function removePosts(post){
+  function removePosts(post) {
     setPosts(posts.filter((item) => {
-        return item.id !== post.id
+      return item.id !== post.id
     }))
-}
+  }
 
   const navigate = useNavigate()
 
@@ -76,24 +76,31 @@ function App() {
   return (
     <div className="bg-gray-50 text-black">
       <RecoilRoot>
-        <Header handleLogout={handleLogout} user={user} />
-        <Routes>
+        <div>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        </div>
 
-          {/* Home */}
-          <Route path="/" element={<Home posts={posts} user={user} handleLogout={handleLogout} getData={getData} updatePosts={updatePosts} removePosts={removePosts}/>} />
+        {user ?
+          <div>
+            <Header handleLogout={handleLogout} user={user} />
+            <Routes>
+              {/* Home */}
+              <Route path="/" element={<Home posts={posts} user={user} handleLogout={handleLogout} getData={getData} updatePosts={updatePosts} removePosts={removePosts} />} />
 
-          {/* Login */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          {/* Profile */}
-          <Route path="/profile" element={<Profile getData={getData} updatePosts={updatePosts} user={user} />} />
+              {/* Profile */}
+              <Route path="/profile" element={<Profile getData={getData} updatePosts={updatePosts} user={user} />} />
 
-          {/* NonUserProfile */}
-          <Route path="/users/:id" element={<NonUserProfile user={user} />} />
-        </Routes>
+              {/* NonUserProfile */}
+              <Route path="/users/:id" element={<NonUserProfile user={user} />} />
+            </Routes>
+          </div>
+          :
+          null
+        }
 
-        <Routes>
-        </Routes>
 
       </RecoilRoot>
     </div>

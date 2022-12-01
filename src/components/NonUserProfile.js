@@ -60,7 +60,7 @@ function NonUserProfile({ user }) {
 
 
     return (
-        <div className='bg-gray-50 w-screen min-h-screen'>
+        <div className='bg-gray-50 w-screen h-full min-h-screen '>
             <div className='p-10 max-w-5xl mx-5 xl:mx-auto '>
                 <div className='grid grid-cols-4 gap-4 border-b-2 pb-8'>
                     <div className='avatar justify-center'>
@@ -69,7 +69,7 @@ function NonUserProfile({ user }) {
                         </div>
                     </div>
                     <div className='col-span-3 ml-10'>
-                        <span className='text-4xl mr-4 font-extralight tracking-wider'>{nonUserData.username}</span>
+                        <span className='text-3xl mr-4 font-light tracking-wide'>{nonUserData.username}</span>
                         {
                             user.following_id.find(id => id == nonUserData.id)
                                 ?
@@ -116,7 +116,7 @@ function NonUserProfile({ user }) {
 
                 </div>
             </div>
-            <ProfilePost user={user} onePost={onePost} setPostButtonPopUp={setPostButtonPopUp} postButtonPopUp={postButtonPopUp} />
+            <ProfilePost user={nonUserData} onePost={onePost} setPostButtonPopUp={setPostButtonPopUp} postButtonPopUp={postButtonPopUp} />
         </div>
     )
 }

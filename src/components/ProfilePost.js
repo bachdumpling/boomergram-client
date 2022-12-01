@@ -61,6 +61,7 @@ function ProfilePost({ user, postButtonPopUp, setPostButtonPopUp, onePost }) {
             .then(setComment(''))
             // .then(getData())
     }
+    console.log(onePost)
 
     const postPopUp = (
         (postButtonPopUp) ?

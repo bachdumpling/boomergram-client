@@ -16,7 +16,7 @@ function Post({ posts, user, getData, removePosts }) {
                 </div>)
                 :
                 (<div className='h-96 grid place-items-center '>
-                    <p className='text-lg text-gray-500'>No post to show</p>
+                    <p className='text-xl text-gray-500'>No post to show</p>
                 </div>)
             }
 

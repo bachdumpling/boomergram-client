@@ -10,21 +10,25 @@ function Modal({ user, updatePosts }) {
     const [imgUrl, setImgUrl] = useState('')
     const [caption, setCaption] = useState('')
     const [captionReplacement, setCaptionReplacement] = useState('')
+    const [newCaption, setNewCaption] = useState(false)
     console.log(`new caption '${captionReplacement}'`)
+    console.log(`new caption '${caption}'`)
     console.log(caption)
     // console.log(captionReplacement)
 
     function findReplaceMent() {
         for (const key in Dictionary){
-            console.log("KEY", key)
             if(caption.toLowerCase().includes(key)){
-                // setTermReplacement(Dictionary[key])
-                // console.log("VALUE",Dictionary[key]);
-                setCaptionReplacement(caption.toLowerCase().replace(key,Dictionary[key]))
+                console.log(`found ${key}`)
+                setCaptionReplacement(caption.toLowerCase().replace(key, Dictionary[key]))
+                setNewCaption(!newCaption)
                 return;
-            }
+            } 
         }
 
+        if(newCaption){
+            return setCaptionReplacement(caption)
+        }
     }
 
     function handleAddPost(e) {
@@ -43,7 +47,7 @@ function Modal({ user, updatePosts }) {
                 .then(r => r.json())
                 .then(setButtonPopup(false))
                 .then(r => updatePosts(r))
-        }, 1000);
+        },200);
     }
 
     const popUp = (

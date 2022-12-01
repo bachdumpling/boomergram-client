@@ -22,6 +22,13 @@ function PostCard({ post, user, getData, userId, removePosts }) {
     const [showComment, setShowComment] = useState(false)
     const [buttonPopup, setButtonPopup] = useState(false)
 
+    const [savedPosts, setSavedPosts] = useState([])
+
+    function handleSavePost(post){
+        setSavedPosts([post, ...savedPosts])
+    }
+
+    // console.log(post.likes)
     const navigate = useNavigate()
 
     function updateComment(cmt) {
@@ -138,7 +145,7 @@ function PostCard({ post, user, getData, userId, removePosts }) {
     )
 
     return (
-        <div className='bg-white my-7 border rounded-md'>
+        <div className='bg-white my-7 border-2 rounded-md'>
             {/* Header */}
             <div className='flex items-center justify-between p-2'>
                 {/* <Link to={`/users/${nonUserId}`}> */}
@@ -182,11 +189,13 @@ function PostCard({ post, user, getData, userId, removePosts }) {
                     })} className='postBtn' />
                     <PaperAirplaneIcon className='postBtn rotate-45' />
                 </div>
-                <BookmarkIcon className='postBtn' />
+                <BookmarkIcon onClick={() => {
+                    setPostId(post)
+                    handleSavePost(post)}} className='postBtn' />
             </div>
 
             {/* caption */}
-            <div className='px-4 pb-1 truncate'>
+            <div className='px-4 pb-1'>
                 <span className='font-semibold'>{post.likes.length} likes</span><br />
                 <span className='font-bold mr-1'>{post.user.username} </span>
                 {post.caption}

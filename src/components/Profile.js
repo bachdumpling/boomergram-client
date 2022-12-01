@@ -198,7 +198,7 @@ function Profile({ user, updatePosts, getData }) {
                             <div className='grid h-[720px] content-between'>
 
                                 <div className='px-4 py-4'>
-                                    {(onePost.comments.length > 0 && (
+                                    {(
                                         <div className='h-full overflow-y-auto scrollbar-thumb-black scrollbar-thin'>
 
                                             <span className='text-md flex-1 font-semibold'>{user.username} </span>{onePost.caption}
@@ -209,7 +209,7 @@ function Profile({ user, updatePosts, getData }) {
                                                 </div>
                                             })}
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
 
                                 <div>
@@ -287,7 +287,7 @@ function Profile({ user, updatePosts, getData }) {
     )
 
     return (
-        <div className='bg-gray-50 w-screen h-full '>
+        <div className='bg-gray-50 w-screen h-full min-h-screen'>
             <div className='p-10 max-w-5xl mx-auto'>
                 <div className='grid grid-cols-4 gap-4 border-b-2 pb-8'>
                     <div className='avatar justify-center'>
@@ -296,7 +296,7 @@ function Profile({ user, updatePosts, getData }) {
                         </div>
                     </div>
                     <div className='col-span-3 ml-10'>
-                        <span className='text-4xl mr-4 font-extralight tracking-wider'>{user.username}</span>
+                        <span className='text-3xl mr-4 font-light tracking-wide'>{user.username}</span>
                         <div className='cursor-pointer inline text-sm text-gray-700 font-semibold p-1 px-2 border border-gray-200 rounded mr-4' onClick={() => {
                             // setUserId(userId)
                             // console.log(userId)
@@ -311,36 +311,44 @@ function Profile({ user, updatePosts, getData }) {
                         <div><p>{user.bio}</p></div>
                     </div>
                 </div>
+                {postArr.length > 0 ?
 
-                <div className='pt-8 grid grid-cols-3 gap-7'>
-                    {postArr.map((img) => {
-                        return (
-                            <div onClick={() => {
-                                setOnePost(img)
-                                setPostButtonPopUp(true)
-                            }} className=' cursor-pointer overflow-hidden aspect-square'>
-                                <div className='relative group cursor-pointerÏ'>
-                                    <div className=' h-[300px] relative'>
-                                        <img className='h-[300px] object-cover w-full' src={img.img_url} />
-                                    </div>
-
-                                    <div className="absolute top-0 opacity-0 group-hover:opacity-100 left-1/2 -translate-x-1/2 w-full h-full bg-black-rgba flex text-white justify-center items-center space-x-3">
-                                        <div className='space-x-1'>
-                                            <HeartIcon className='h-6 inline -translate-y-[2px]' /><span>{img.likes.length}</span>
+                    <div className='pt-8 grid grid-cols-3 gap-7'>
+                        {postArr.map((img) => {
+                            return (
+                                <div onClick={() => {
+                                    setOnePost(img)
+                                    setPostButtonPopUp(true)
+                                }} className=' cursor-pointer overflow-hidden aspect-square'>
+                                    <div className='relative group cursor-pointerÏ'>
+                                        <div className=' h-[300px] relative'>
+                                            <img className='h-[300px] object-cover w-full' src={img.img_url} />
                                         </div>
 
-                                        <div className='space-x-1'>
-                                            <FontAwesomeIcon className='scale-x-[-1]' icon={faComment} size='lg' /><span>{img.comments.length}</span>
+                                        <div className="absolute top-0 opacity-0 group-hover:opacity-100 left-1/2 -translate-x-1/2 w-full h-full bg-black-rgba flex text-white justify-center items-center space-x-3">
+                                            <div className='space-x-1'>
+                                                <HeartIcon className='h-6 inline -translate-y-[2px]' /><span>{img.likes.length}</span>
+                                            </div>
+
+                                            <div className='space-x-1'>
+                                                <FontAwesomeIcon className='scale-x-[-1]' icon={faComment} size='lg' /><span>{img.comments.length}</span>
+                                            </div>
                                         </div>
+
+
                                     </div>
-
-
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
 
-                </div>
+                    </div>
+                    :
+                    <div className='h-96 grid place-items-center '>
+                        <p className='text-xl text-gray-500'>
+                            No post to show
+                        </p>
+                    </div>
+                }
                 {editPopUp}
 
                 {postPopUp}

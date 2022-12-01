@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { modalState } from './atoms/modalAtom'
 import Search from './Search'
-import SlamStyle from './SlamStyle'
 
 function Header({ user, handleLogout }) {
 
@@ -41,10 +40,10 @@ function Header({ user, handleLogout }) {
             <div className='flex justify-between max-w-6xl mx-5 lg:mx-auto'>
 
                 {/* left */}
-                <div onClick={() => setToggleBoomer(!toggleBoomer)} className='relative flex items-center hidden lg:inline-grid w-28 cursor-pointer object-contain z-50'>
-                   <img src='https://www.vectorlogo.zone/logos/instagram/instagram-wordmark.svg' />
+                <div onClick={() => setToggleBoomer(!toggleBoomer)} className='relative flex items-center lg:inline-grid w-28 cursor-pointer object-contain z-50'>
+                    <img src='https://www.vectorlogo.zone/logos/instagram/instagram-wordmark.svg' />
                 </div>
-                <div className='relative flex items-center w-10 lg:hidden shrink-0 cursor-pointer object-contain'>
+                <div className='relative flex items-center w-10 hidden shrink-0 cursor-pointer object-contain'>
                     <Link to='/'><img src='https://seeklogo.com/images/I/instagram-new-2016-glyph-logo-84CB825424-seeklogo.com.png' /></Link>
                 </div>
 
@@ -65,11 +64,11 @@ function Header({ user, handleLogout }) {
 
                     <Link to='/'><HomeIcon className='navBtn' /></Link>
                     <MenuIcon className='h-6 md:hidden cursor-pointer' />
-                    <div className='relative'>
+                    {/* <div className='relative'>
                         <ChatIcon className='navBtn' />
                         <div className='absolute hidden lg:inline-grid -top-1 -right-2 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white animate-pulse'>3</div>
 
-                    </div>
+                    </div> */}
                     <PlusCircleIcon onClick={() => setOpen(true)} className='navBtn' />
                     {/* <UserGroupIcon className='navBtn' /> */}
                     <HeartIcon className='navBtn' />
@@ -123,13 +122,18 @@ function Header({ user, handleLogout }) {
 
             {
                 toggleBoomer
-                ? (
-                    <div className='w-8/12 -translate-x-4 -translate-y-12 flex justify-center absolute '>
-                        <div className='text-black animate-bounce relative top-2 w-32 h-28 text-3xl flex justify-end items-center'>
-                            <span className='font-billabong tracking-wider relative -rotate-12'>For Boomer</span>
-                        </div>
-                    </div>)
-                : null
+                    ? (
+                        <div className='top-0 sticky max-w-5xl ml-auto mr-auto flex justify-between'>
+                            <div className='text-black animate-bounce absolute w-32 text-3xl h-20'>
+                                <div className='-rotate-12'>
+                                <p className='font-billabong tracking-wider relative'>For Boomer</p>
+                                </div>
+                            </div>
+                            <div className='hidden'>
+                                .
+                            </div>
+                        </div>)
+                    : null
             }
 
         </div>
